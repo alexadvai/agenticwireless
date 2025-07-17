@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import type { Anomaly } from '@/lib/types';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
 import { AlertTriangle } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 const mockAnomalies: Anomaly[] = [
   { id: 'anom-1', type: 'DHCP Flood', severity: 'High', timestamp: new Date(Date.now() - 3600000), description: 'Excessive DHCP requests from MAC 00:1B:44:11:3A:B7' },
@@ -71,8 +72,8 @@ export function AnomalyDetectionTab() {
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
-                <div className="text-sm">
-                    <p><strong className="text-foreground">Severity:</strong> {getSeverityBadge(selectedAnomaly?.severity || 'Low')}</p>
+                <div className="text-sm space-y-2">
+                    <div><strong className="text-foreground mr-2">Severity:</strong> {getSeverityBadge(selectedAnomaly?.severity || 'Low')}</div>
                     <p><strong className="text-foreground">Timestamp:</strong> {selectedAnomaly?.timestamp.toLocaleString()}</p>
                     <p><strong className="text-foreground">Description:</strong> {selectedAnomaly?.description}</p>
                 </div>
