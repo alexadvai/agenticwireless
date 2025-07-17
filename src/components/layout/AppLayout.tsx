@@ -29,13 +29,13 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         <SidebarHeader className="p-4">
             <div className="flex items-center gap-2">
                 <ShieldCheck className="w-8 h-8 text-primary" />
-                <h2 className="text-xl font-bold text-foreground">AdversAI</h2>
+                <h2 className="text-xl font-bold text-foreground">AgenticWireless</h2>
             </div>
         </SidebarHeader>
         <SidebarContent>
           <SidebarMenu>
             <SidebarMenuItem>
-              <Link href="/wireless-scanner" passHref>
+              <Link href="/wireless-scanner">
                 <SidebarMenuButton
                   asChild
                   isActive={pathname.startsWith('/wireless-scanner')}
@@ -70,7 +70,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             <header className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-4">
                     <SidebarTrigger className="md:hidden" />
-                    <h1 className="text-3xl font-bold tracking-tight text-foreground">Wireless Insights</h1>
+                    <h1 className="text-3xl font-bold tracking-tight text-foreground">Wireless Scanner</h1>
                 </div>
                 <div className="flex items-center gap-4">
                     <Badge variant="outline">v1.0.0</Badge>
