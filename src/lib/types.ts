@@ -37,3 +37,8 @@ export interface ProtocolSummary {
   aiSummary?: string;
   isLoadingAiSummary?: boolean;
 }
+
+export interface AnomalyAnalysis {
+  analysis: string;
+  recommendation: string;
+}
