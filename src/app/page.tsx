@@ -1,3 +1,6 @@
+import { redirect } from 'next/navigation';
+
 export default function Home() {
-  return <></>;
+  redirect('/wireless-scanner');
+  return null;
 }
