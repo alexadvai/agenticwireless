@@ -35,16 +35,16 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         <SidebarContent>
           <SidebarMenu>
             <SidebarMenuItem>
-              <Link href="/wireless-scanner" passHref legacyBehavior>
+              <Link href="/wireless-scanner" passHref>
                 <SidebarMenuButton
                   asChild
                   isActive={pathname.startsWith('/wireless-scanner')}
                   tooltip="Wireless Scanner"
                 >
-                  <a>
+                  <div>
                     <Wifi />
                     <span>Wireless Scanner</span>
-                  </a>
+                  </div>
                 </SidebarMenuButton>
               </Link>
             </SidebarMenuItem>
