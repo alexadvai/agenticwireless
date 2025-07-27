@@ -5,7 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import type { Anomaly, AnomalyAnalysis } from '@/lib/types';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { AlertTriangle, Loader2, Wand2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { analyzeAnomaly } from '@/ai/flows/analyze-anomaly';
@@ -36,6 +36,7 @@ export function AnomalyDetectionTab() {
   const [selectedAnomaly, setSelectedAnomaly] = useState<Anomaly | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isLoadingAnalysis, setIsLoadingAnalysis] = useState(false);
+  const [loadingAnomalyId, setLoadingAnomalyId] = useState<string | null>(null);
   const [analysisResult, setAnalysisResult] = useState<AnomalyAnalysis | null>(null);
   const { toast } = useToast();
 
@@ -50,9 +51,10 @@ export function AnomalyDetectionTab() {
 
   const handleIncidentReview = async (anomaly: Anomaly) => {
     setSelectedAnomaly(anomaly);
-    setIsDialogOpen(true);
-    setIsLoadingAnalysis(true);
     setAnalysisResult(null);
+    setLoadingAnomalyId(anomaly.id);
+    setIsLoadingAnalysis(true);
+    setIsDialogOpen(true);
 
     try {
       const result = await analyzeAnomaly({
@@ -62,12 +64,12 @@ export function AnomalyDetectionTab() {
         packetSample: mockPacketData,
       });
       setAnalysisResult(result);
-      toast({ title: "Analysis Complete", description: "AI-powered insights have been generated." });
     } catch (error) {
       console.error("Failed to analyze anomaly:", error);
       toast({ variant: "destructive", title: "Analysis Failed", description: "Could not generate AI insights for this anomaly." });
     } finally {
       setIsLoadingAnalysis(false);
+      setLoadingAnomalyId(null);
     }
   };
 
@@ -99,8 +101,12 @@ export function AnomalyDetectionTab() {
                     <TableCell>{anomaly.timestamp.toLocaleString()}</TableCell>
                     <TableCell className="max-w-sm truncate">{anomaly.description}</TableCell>
                     <TableCell>
-                      <Button variant="default" size="sm" onClick={() => handleIncidentReview(anomaly)}>
-                        <Wand2 className="mr-2 h-4 w-4"/>
+                      <Button variant="default" size="sm" onClick={() => handleIncidentReview(anomaly)} disabled={loadingAnomalyId === anomaly.id}>
+                        {loadingAnomalyId === anomaly.id ? (
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        ) : (
+                          <Wand2 className="mr-2 h-4 w-4"/>
+                        )}
                         Review with AI
                       </Button>
                     </TableCell>
@@ -118,7 +124,7 @@ export function AnomalyDetectionTab() {
             </DialogHeader>
             <div className="grid gap-4 py-4">
                 <div className="text-sm space-y-2">
-                    <div><strong className="text-foreground mr-2">Severity:</strong> {getSeverityBadge(selectedAnomaly?.severity || 'Low')}</div>
+                    <div className='flex items-center gap-2'><strong className="text-foreground">Severity:</strong> {getSeverityBadge(selectedAnomaly?.severity || 'Low')}</div>
                     <div><strong className="text-foreground">Timestamp:</strong> {selectedAnomaly?.timestamp.toLocaleString()}</div>
                     <div><strong className="text-foreground">Description:</strong> {selectedAnomaly?.description}</div>
                 </div>
