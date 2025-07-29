@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -9,10 +9,15 @@ import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from 'recharts';
 
+type PacketData = { name: string; packets: number };
+
+// Store data outside the component to persist it across renders
+let persistentPacketsData: PacketData[] = [];
+
 export function LiveCaptureTab() {
   const [isScanning, setIsScanning] = useState(false);
   const [logs, setLogs] = useState<string[]>([]);
-  const [packetsData, setPacketsData] = useState<{ name: string; packets: number }[]>([]);
+  const [packetsData, setPacketsData] = useState<PacketData[]>(persistentPacketsData);
   const logContainerRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
   const { toast } = useToast();
@@ -26,12 +31,12 @@ export function LiveCaptureTab() {
         const newLog = `[${new Date().toLocaleTimeString()}] Packet captured: Protocol ${['TCP', 'UDP', 'ICMP'][Math.floor(Math.random() * 3)]}, Length ${Math.floor(Math.random() * 1500)}`;
         setLogs(prev => [...prev.slice(-200), newLog]);
         
-        setPacketsData(prev => {
-            const now = new Date();
-            const timeKey = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
-            const newDataPoint = { name: timeKey, packets: Math.floor(Math.random() * 100) + 50 };
-            return [...prev.slice(-9), newDataPoint];
-        });
+        const now = new Date();
+        const timeKey = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
+        const newDataPoint = { name: timeKey, packets: Math.floor(Math.random() * 100) + 50 };
+        
+        persistentPacketsData = [...persistentPacketsData.slice(-9), newDataPoint];
+        setPacketsData(persistentPacketsData);
 
       }, 1000);
     }
@@ -61,6 +66,7 @@ export function LiveCaptureTab() {
     } else {
       setIsScanning(true);
       setLogs([`[${new Date().toLocaleTimeString()}] Starting live capture...`]);
+      persistentPacketsData = []; // Clear data on new scan
       setPacketsData([]);
       toast({ title: "Scan Started", description: "Live capture is now running." });
     }

@@ -34,6 +34,7 @@ export interface ProtocolSummary {
   packetCount: number;
   dataVolume: number; // in bytes
   anomalyCount: number;
+  date: Date;
   aiSummary?: string;
   isLoadingAiSummary?: boolean;
 }
