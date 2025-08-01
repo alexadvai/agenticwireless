@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import type { Packet, Protocol } from '@/lib/types';
 import { Button } from '../ui/button';
+import { format } from 'date-fns';
 
 const protocols: Protocol[] = ['802.11', 'ARP', 'DHCP', 'HTTP', 'DNS', 'TCP', 'UDP'];
 
@@ -85,7 +86,7 @@ export function TrafficExplorerTab() {
               {paginatedPackets.length > 0 ? (
                 paginatedPackets.map(packet => (
                   <TableRow key={packet.id}>
-                    <TableCell>{packet.timestamp.toLocaleString()}</TableCell>
+                    <TableCell className="whitespace-nowrap">{format(packet.timestamp, "MMM d, h:mm a")}</TableCell>
                     <TableCell>{packet.protocol}</TableCell>
                     <TableCell>{packet.source}</TableCell>
                     <TableCell>{packet.destination}</TableCell>
