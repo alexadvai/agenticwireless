@@ -12,6 +12,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { DateRange } from 'react-day-picker';
 import { addDays, format, isWithinInterval } from 'date-fns';
 import { cn } from '@/lib/utils';
+import { Skeleton } from '../ui/skeleton';
 
 const initialSummaries: ProtocolSummary[] = [
   { protocol: '802.11', packetCount: 12543, dataVolume: 1578654, anomalyCount: 12, date: new Date(Date.now() - 86400000 * 2) },
@@ -152,11 +153,15 @@ export function ProtocolAnalysisTab({ className }: React.HTMLAttributes<HTMLDivE
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
-                        {summary.isLoadingAiSummary && <p className="text-muted-foreground">Generating summary...</p>}
-                        {summary.aiSummary ? (
+                        {summary.isLoadingAiSummary ? (
+                            <div className="space-y-2">
+                                <Skeleton className="h-4 w-4/5" />
+                                <Skeleton className="h-4 w-full" />
+                            </div>
+                        ) : summary.aiSummary ? (
                            <p className="text-muted-foreground">{summary.aiSummary}</p>
                         ) : (
-                           !summary.isLoadingAiSummary && <p className="text-muted-foreground">Click 'Generate' to create an AI summary for this protocol.</p>
+                           <p className="text-muted-foreground">Click 'Generate' to create an AI summary for this protocol.</p>
                         )}
                     </CardContent>
                 </Card>
