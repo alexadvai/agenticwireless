@@ -36,12 +36,13 @@ export function TrafficExplorerTab() {
       );
   }, [filterProtocol, searchTerm]);
 
+  const totalPages = Math.ceil(filteredPackets.length / ITEMS_PER_PAGE);
+
   const paginatedPackets = useMemo(() => {
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
     return filteredPackets.slice(startIndex, startIndex + ITEMS_PER_PAGE);
   }, [filteredPackets, currentPage]);
 
-  const totalPages = Math.ceil(filteredPackets.length / ITEMS_PER_PAGE);
 
   return (
     <Card>
@@ -104,7 +105,7 @@ export function TrafficExplorerTab() {
 
         <div className="flex items-center justify-between">
           <div className="text-sm text-muted-foreground">
-            Page {currentPage} of {totalPages}
+            Page {totalPages > 0 ? currentPage : 0} of {totalPages}
           </div>
           <div className="flex gap-2">
             <Button
@@ -119,7 +120,7 @@ export function TrafficExplorerTab() {
               variant="outline"
               size="sm"
               onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-              disabled={currentPage === totalPages}
+              disabled={currentPage === totalPages || totalPages === 0}
             >
               Next
             </Button>
